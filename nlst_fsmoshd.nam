@@ -1,0 +1,51 @@
+&nam_grid
+  NNx = 1,
+  NNy = 1,
+  NNsmax = 3,
+  NNsoil = 4,
+/
+&nam_layers
+  DDzsnow = 0.1, 0.2, 0.4,
+  DDzsoil = 0.1, 0.2, 0.4, 0.8,
+/
+&nam_driving
+  zzT = 10,
+  zzU = 10,
+  met_file = 'data/input_SLF_5WJ.txt',
+  out_file = 'data/output_SLF_5WJ.txt',
+/
+&nam_modconf
+  NALBEDO = 2,
+  NCANMOD = 0,
+  NCONDCT = 1,
+  NDENSTY = 3,
+  NEXCHNG = 1,
+  NHYDROL = 2,
+  NSNFRAC = 3,
+  NRADSBG = 0,
+  NZOFFST = 0,
+  NOSHDTN = 1,
+  LHN_ON  = .FALSE.,
+  LFOR_HN = .TRUE.,
+/
+&nam_modpert
+  LZ0PERT = .FALSE.,
+/
+&nam_modtile
+  CTILE = 'open',
+  rtthresh = 0.1,
+/
+&nam_results
+   CLIST_DIAG_RESULTS = 'rotc', 'hsnt', 'swet', 'slqt', 'swtb', 'swtd', 'lwtr', 'romc', 'sbsc',
+   CLIST_STATE_RESULTS = 'tsfe', 'scfe',
+/
+&nam_location
+  fsky_terr = 0.9483,
+  slopemu = 0.0122,
+  xi = 0,
+  Ld = 1,
+  lat = 46.8296,
+  lon = 9.8092,
+  dem = 2540,
+  pmultf = 1,
+/
