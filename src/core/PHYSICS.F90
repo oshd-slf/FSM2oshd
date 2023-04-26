@@ -110,10 +110,10 @@ call SNOW(Esrf,G,ksnow,ksoil,Melt,unload,Gsoil,Roff,meltflux_out,Sbsrf)
 
 call SOIL(csoil,Gsoil,ksoil)
 
-! call CUMULATE(Roff, meltflux_out,Sbsrf,Sdirt,Sdift,LWt,asrf_out,Melt, &
-!               Esrf,Eveg,Gsoil,Hsrf,intcpt,KH,KHa,Khg,KHv,KWg,KWv,  &
-!               LE,LEsrf,LWsci,LWveg,Rnet,Rsrf,Sbveg,H,Swsci,SWsrf,  &
-!               SWveg,Usc,unload)
+call CUMULATE(Roff, meltflux_out,Sbsrf,Sdirt,Sdift,LWt,asrf_out,Melt, &
+              Esrf,Eveg,Gsoil,Hsrf,intcpt,KH,KHa,Khg,KHv,KWg,KWv,  &
+              LE,LEsrf,LWsci,LWveg,Rnet,Rsrf,Sbveg,H,Swsci,SWsrf,  &
+              SWveg,Usc,unload)
 
 
 end subroutine PHYSICS
