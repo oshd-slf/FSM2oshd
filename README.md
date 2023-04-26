@@ -11,11 +11,11 @@ can be run for a point simulation using input data stored in a text file (see da
 
 To compile the model for windows, use the [gfortran](https://gcc.gnu.org/wiki/GFortran) compiler and execute the compile script in the root folder:
 
-`./compil.bat`
+`./compil_txt.bat`
 
 Run the executable with the command:
 
-`./FSMOSHD.exe nlst_fsmoshd.nam`
+`./FSM_TXT.exe nlst_txt.nam`
 
 ## References
 
