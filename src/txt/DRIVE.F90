@@ -54,7 +54,7 @@ real*4 :: &
 
 integer :: i,j,where,eastatus 
 
-read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h
+read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv
 
 ! ! FSM driving data
 ! inquire(unit=800, pos=where)
