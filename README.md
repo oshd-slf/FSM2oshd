@@ -17,6 +17,8 @@ Run the executable with the command:
 
 `./FSM_TXT.exe nlst_txt.nam`
 
+See the Python script `runner.py` for performing simulations and displaying the results for different configurations. The `requirements.txt` file contains information about the virtual environment used for running this code.
+
 ## References
 
 <a name="Essery2015"></a> Essery (2015). A Factorial Snowpack Model (FSM 1.0). *Geoscientific Model Development*, **8**, 3867-3876, [doi:10.5194/gmd-8-3867-2015](http://www.geosci-model-dev.net/8/3867/2015/)
