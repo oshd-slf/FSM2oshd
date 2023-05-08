@@ -1,3 +1,4 @@
 OUTPUT_SLF_5WJ.txt
 *.exe
 *.mod
+venv/
