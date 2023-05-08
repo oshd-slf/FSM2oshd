@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 
 #%% Function for writing namelist file
 
-def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL, SNFRAC):
+def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL):
     
   nlst = f"""
 &nam_grid
@@ -33,7 +33,7 @@ def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL, SNFRAC):
   NDENSTY = {DENSTY},
   NEXCHNG = {EXCHNG},
   NHYDROL = {HYDROL},
-  NSNFRAC = {SNFRAC},
+  NSNFRAC = 3,
   NRADSBG = 0,
   NZOFFST = 0,
   NOSHDTN = 1,
@@ -70,9 +70,9 @@ def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL, SNFRAC):
 
 #%% Function for running the model
 
-def run_fsm(ALBEDO=2, CANMOD=0, CONDCT=1, DENSTY=3, EXCHNG=1, HYDROL=2, SNFRAC=3):
+def run_fsm(ALBEDO=2, CANMOD=0, CONDCT=1, DENSTY=3, EXCHNG=1, HYDROL=2):
 
-  write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL, SNFRAC)
+  write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL)
 
   status = os.system('FSM_TXT.exe nlst_tmp.nam')
 
@@ -158,19 +158,3 @@ plot(df, 'HYDROL=1')
 df = run_fsm(HYDROL=2)
 plot(df, 'HYDROL=2')
 plt.legend()
-
-
-#%% Run model for different snow cover fraction options
-
-df = run_fsm(SNFRAC=0)
-plot(df, 'SNFRAC=0')
-df = run_fsm(SNFRAC=1)
-plot(df, 'SNFRAC=1')
-df = run_fsm(SNFRAC=2)
-plot(df, 'SNFRAC=2')
-df = run_fsm(SNFRAC=3)
-plot(df, 'SNFRAC=3')
-df = run_fsm(SNFRAC=4)
-plot(df, 'SNFRAC=4')
-plt.legend()
-
