@@ -1,9 +1,9 @@
 # FSM2oshd
 
-FSM2oshd (Mott et al., under review) is a variant of the Flexible Snow Model FSM2.0.3 [(Essery, 2015)](#Essery2015). Specifically designed for snow-hydrological forecasting in Switzerland, FSM2oshd is developed by the operational snow-hydrological service at the WSL Institute for Snow and Avalanche Research SLF [operational snow-hydrological service](https://www.slf.ch/en/snow/snow-as-a-water-resource/snow-hydrological-forecasting.html). 
+FSM2oshd (Mott et al., under review) solves the complete mass and energy balance of the snowpack for open and forested areas and is originally based on the Flexible Snow Model FSM2 [(Essery, 2015)](#Essery2015). Specifically designed for snow-hydrological forecasting in Switzerland, FSM2oshd is developed by the operational snow-hydrological service at the WSL Institute for Snow and Avalanche Research SLF [operational snow-hydrological service](https://www.slf.ch/en/snow/snow-as-a-water-resource/snow-hydrological-forecasting.html). 
 
 
-FSM2oshd includes novel components that account for forest processes [(Mazzotti et al., 2021)](#Mazzotti2021) and snow cover fraction [(Helbig et al., 2021)](#Helbig2021) computations. For larger-scale applications sub-grid parameterizations for radiation [(Helbig and Löwe, 2014)](#Helbig2014) and wind [(Helbig et al., 2017)](#Helbig2017) have been implemented. Additionally, FSM2oshd features updated snow pack process parameterizations, including snow compaction, new snow density, decay of snow albedo, and snow hydraulics. 
+FSM2oshd includes novel model components that account for forest processes [(Mazzotti et al., 2021)](#Mazzotti2021) and snow cover fraction [(Helbig et al., 2021)](#Helbig2021) computations. For larger-scale applications sub-grid parameterizations for radiation [(Helbig and Löwe, 2014)](#Helbig2014) and wind [(Helbig et al., 2017)](#Helbig2017) have been implemented. Additionally, FSM2oshd features updated snow pack process parameterizations, including snow compaction, new snow density, decay of snow albedo, and snow hydraulics. 
 
 In addition to its point-based capabilities, FSM2oshd can also be run on a regular grid. When run on a grid, the model divides each grid cell into separate tiles, accounting for forest-covered, open, and glacierized fractions. FSM2oshd, in its grid mode, includes several enhancements for the forest tiles [Mazzotti et al., (2020)](#Mazzotti2020). These improvements include the incorporation of local canopy cover fraction, hemispherical sky view fraction, wind attenuation, and spatial patterns of shortwave and longwave radiation transfer through the canopy [(Mazotti et al., 2023)](#Mazzotti2023). Furthermore, the model now accounts for preferential deposition of snow in canopy gaps, resulting in more accurate predictions. These enhancements ensure that FSM2oshd provides highly detailed and precise predictions for snow-hydrological processes in complex forested terrain.
 
@@ -12,7 +12,9 @@ The FSM2oshd model can be utilized for seasonal runs to analyze and predict spat
 ## Building and running the model
 
 The main computation routines of FSM2oshd are located in the **./src/core** folder. For demonstration purposes, the model
-can be run for a point simulation using input data stored in a text file (**./data**). The code for handling model setup and input/output operations related to the text file driving option is found in the **./src/txt** folder.
+can be run for a point simulation using input data stored in a text file (**./data**). The code for handling model setup and input/output operations related to the text file driving option is found in the **./src/txt** folder. 
+
+We are currently working on creating example files that can be used to run FSM2oshd in its grid mode, and we anticipate making them available in the near future.
 
 To compile the model for windows, use the [gfortran](https://gcc.gnu.org/wiki/GFortran) compiler and execute the compile script in the root folder:
 
