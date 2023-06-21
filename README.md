@@ -12,7 +12,7 @@ The FSM2oshd model can be utilized for seasonal runs to analyze and predict spat
 ## Building and running the model
 
 The main computation routines of FSM2oshd are located in the **./src/core** folder. For demonstration purposes, the model
-can be run for a point simulation using input data stored in a text file (**./data**). The code for handling model setup and input/output operations related to the text file driving option is found in the **./src/txt** folder. 
+can be run for a point simulation using input data stored in a text file (**./data**). In addition to the meteorological input data used in the original FSM2 version [(Essery, 2015)](#Essery2015), FSM2oshd requires input of 24h snowfall sums and canopy transmissivity for direct shortwave radiation (which should be approximated by the constant value of sky view fraction if such a time series is not available). The code for handling model setup and input/output operations related to the text file driving option is found in the **./src/txt** folder. 
 
 We are currently working on creating example files that can be used to run FSM2oshd in its grid mode, and we anticipate making them available in the near future.
 
@@ -24,7 +24,9 @@ Run the executable with the command:
 
 `./FSM_TXT.exe nlst_txt.nam`
 
-See the Python script `runner.py` for performing simulations and displaying the results for different model configurations (albedo, canopy, conductivity, snow density, hydraulics). The `requirements.txt` file contains information about the virtual environment used for running this code.
+Model output is stored in a text file (see **./data**).
+
+See the Python script `runner.py` for performing simulations and displaying the results for different model configurations (albedo, canopy, conductivity, snow density, hydraulics). The `requirements.txt` file contains information about the virtual environment used for running this code. The file nlst_txt_forest.nam contains the settings adapted to simulations at forest points.
 
 ## References
 

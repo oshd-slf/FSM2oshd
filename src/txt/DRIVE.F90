@@ -56,6 +56,11 @@ integer :: i,j,where,eastatus
 
 read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv
 
+! use Tv dummy in case of open simulations
+if (CANMOD == 0) then
+  Tv(:,:) = 1
+endif
+
 ! ! FSM driving data
 ! inquire(unit=800, pos=where)
 ! read(800,pos=where,IOSTAT=eastatus) year

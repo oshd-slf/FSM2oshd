@@ -114,7 +114,8 @@ namelist  /nam_modconf/ NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,
 namelist  /nam_modtile/ CTILE, rtthresh
 namelist  /nam_modpert/ LZ0PERT,LWCPERT,LFSPERT,LALPERT,LSLPERT
 namelist  /nam_results/ CLIST_DIAG_RESULTS, CLIST_STATE_RESULTS
-namelist  /nam_location/ fsky_terr,slopemu,xi,Ld,lat,lon,dem,pmultf
+namelist  /nam_location/ fsky_terr,slopemu,xi,Ld,lat,lon,dem,pmultf,fveg,hcan,lai,vfhp,fves
+!namelist  /nam_forest/ fveg,hcan,lai,vfhp,fves
 
 ! get namelist path from first command argument.
 call getarg(1, nlst_file)
@@ -253,11 +254,6 @@ if (FSPERT) allocate(fsP(Nx,Ny))
 if (ALPERT) allocate(alP(Nx,Ny))
 if (SLPERT) allocate(slP(Nx,Ny))
 
-! use Tv dummy in case of open simulations
-if (CANMOD == 0) then
-  Tv(:,:) = 1
-endif
-
 ! Defaults for numerical solution parameters
 Nitr = 4
 
@@ -366,11 +362,14 @@ fsky(:,:)  = undef
 fveg(:,:)  = undef
 fves(:,:)  = undef
 hcan(:,:)  = undef
+lai(:,:)   = undef
 pmultf(:,:) = undef
 scap(:,:)  = undef
 trcn(:,:)  = undef
 VAI(:,:)   = undef
+vfhp(:,:)  = undef
 
+print*, lai
 !Terrain properties
 allocate(slopemu(Nx,Ny))
 allocate(xi(Nx,Ny))
@@ -542,6 +541,7 @@ end if
 ! read(1129) dem
 
 read(5000, nam_location)
+print*, fveg
 
 ! Cap glacier temperatures to 0°C
 if (TILE == 'glacier') then
@@ -577,6 +577,8 @@ if (SNFRAC == 0 ) then
   ! read(1125) xi
   ! read(1126) Ld
 endif
+
+!read(5000, nam_forest)
 
 if (TILE /= 'forest') then
   ! canopy properties (no canopy)

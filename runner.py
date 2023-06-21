@@ -60,6 +60,11 @@ def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL):
   lon = 9.8092,
   dem = 2540,
   pmultf = 1,
+  fveg = 0,
+  hcan = 0,
+  lai = 0,
+  vfhp = 1, 
+  fves = 0,
 /
   """
   

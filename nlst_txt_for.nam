@@ -16,14 +16,14 @@
 /
 &nam_modconf
   NALBEDO = 2,
-  NCANMOD = 0,
+  NCANMOD = 1,
   NCONDCT = 1,
   NDENSTY = 3,
-  NEXCHNG = 1,
+  NEXCHNG = 2,
   NHYDROL = 2,
   NSNFRAC = 3,
   NRADSBG = 0,
-  NZOFFST = 0,
+  NZOFFST = 1,
   NOSHDTN = 1,
   LHN_ON  = .FALSE.,
   LFOR_HN = .TRUE.,
@@ -32,7 +32,7 @@
   LZ0PERT = .FALSE.,
 /
 &nam_modtile
-  CTILE = 'open',
+  CTILE = 'forest',
   rtthresh = 0.1,
 /
 &nam_results
@@ -48,9 +48,9 @@
   lon = 9.8092,
   dem = 2540,
   pmultf = 1,
-  fveg = 0,
-  hcan = 0,
-  lai = 0,
-  vfhp = 1, 
-  fves = 0,
+  fveg = 0.6,
+  hcan = 15,
+  lai = 2.5, 
+  vfhp = 0.5,
+  fves = 0.6,
 /
