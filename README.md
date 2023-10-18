@@ -16,6 +16,7 @@ can be run for a point simulation using input data stored in a text file (**./da
 
 We are currently working on creating example files that can be used to run FSM2oshd in its grid mode, and we anticipate making them available in the near future.
 
+### Windows compilation
 To compile the model for windows, use the [gfortran](https://gcc.gnu.org/wiki/GFortran) compiler and execute the compile script in the root folder:
 
 `./compil_txt.bat`
@@ -26,7 +27,30 @@ Run the executable with the command:
 
 Model output is stored in a text file (see **./data**).
 
+### Linux compilation
+
+```
+#-----------------------
+#  compile using gfortran
+#-----------------------
+
+bash compile_oshd_txt.sh
+
+#-----------------------
+#  execute example
+#-----------------------
+
+# open mode
+./FSM_OSHD nlst_txt.nam
+
+# forest mode
+./FSM_OSHD nlst_txt_for.nam
+```
+
+### Python wrapper
+
 See the Python script `runner.py` for performing simulations and displaying the results for different model configurations (albedo, canopy, conductivity, snow density, hydraulics). The `requirements.txt` file contains information about the virtual environment used for running this code. The file nlst_txt_forest.nam contains the settings adapted to simulations at forest points.
+
 
 ## References
 

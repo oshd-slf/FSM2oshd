@@ -3,7 +3,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import platform
 
 #%% Function for writing namelist file
 
@@ -78,8 +78,17 @@ def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL):
 def run_fsm(ALBEDO=2, CANMOD=0, CONDCT=1, DENSTY=3, EXCHNG=1, HYDROL=2):
 
   write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL)
+  pls = platform.system()
 
-  status = os.system('FSM_TXT.exe nlst_tmp.nam')
+  if pls == "Windows":
+      fsm_cmd = 'FSM_TXT.exe nlst_tmp.nam'
+  elif pls == "Linux":
+      fsm_cmd = './FSM_OSHD nlst_tmp.nam'
+  elif pls == "Darwin":
+      print("WARNING: Not tested on MacOS")
+  else:
+      print("Unidentified system")
+  status = os.system(fsm_cmd)
 
   os.remove('nlst_tmp.nam')
 

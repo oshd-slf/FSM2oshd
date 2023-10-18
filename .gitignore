@@ -3,3 +3,5 @@ OUTPUT_SLF_5WJ.txt
 *.mod
 venv/
 .venv/
+
+data/outp*
