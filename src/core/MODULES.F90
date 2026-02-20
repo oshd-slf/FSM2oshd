@@ -50,7 +50,8 @@ integer :: &
 ! Driving data options
   ZOFFST,     &! measurement height offset    : 0, 1
 ! OSHD-specific options
-  OSHDTN       ! oshd-specific tuning options of fresh snow albedo, snow roughness lengths and fresh snow density: 0, 1
+  OSHDTN,     &! oshd-specific tuning options of fresh snow albedo, snow roughness lengths and fresh snow density: 0, 1
+  ALRADT       ! activate tuning of the albedo decay as a function of incoming direct shortwave radiation
 logical :: &
   HN_ON,      &!activate the new snow model
   FOR_HN       !write 18h states for the hn model.
@@ -195,7 +196,8 @@ real, allocatable :: &
   wcP(:,:),          &! liquid water capacity perturbations
   fsP(:,:),          &! fresh snow density perturbations
   alP(:,:),          &! albedo perturbations
-  slP(:,:)            ! settling perturbations
+  slP(:,:),          &! settling perturbations
+  Sdird(:,:)         ! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
 end module DRIVING
 
 !-----------------------------------------------------------------------

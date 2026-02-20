@@ -47,7 +47,6 @@ real :: &
   sd_snowdepth1,             &! Standard deviation parameter cf. Helbig et al. (2014)
   sd_snowdepth2,             &! Standard deviation parameter cf. Helbig et al. (2014)
   sd_snowdepth3,             &! Standard deviation parameter cf. Helbig et al. (2014)
-  snowdepth_threshold,       &! snowdepth threshold for setting fsnow to zero
   dsnowdepth,                &! change in Snow depth in past 14 days (m)
   dsnowdepthmax,             &! Maximum change in Snow depth in past 14 days (m)
   dsnowdepth_recent,         &! Recent change in Snow depth (m)
@@ -64,10 +63,6 @@ real :: &
   sd_snowdepth0_dhs,         &! Parameterized standard deviation of new snow depths in a grid cell 
   sd_snowdepth0_dhs_recent    ! Parameterized standard deviation of recent new snow depths in a grid cell 
   
-! lower snowdepth value which is taken from swe_threshold = 2 (in EKF) 
-! converted using the standard_density = 350 (in EKF) to snowdepth_threshold = 0.005714286
-snowdepth_threshold = 0.005714286
-
 if (SNFRAC == 0) then
   ! reads SWE amounts from previous model runs, and calculate dswe in as difference between the minimum in the previous days to current swe
   ! This has three SCF regimes: 
@@ -154,6 +149,9 @@ if (SNFRAC == 0) then
     swemax(i,j)       = SWEtmp
     swemin(i,j)       = SWEtmp
   end if
+
+  ! BC: same as with the dsnowdepth, it is possible that snowdepth >snowdepthmax because the position of the max is determined
+  !   based on SWE values.
   if (snowdepth >= snowdepthmax(i,j)) then
     snowdepthmax(i,j) = snowdepth
     snowdepthmin(i,j) = snowdepth
@@ -170,10 +168,8 @@ if (SNFRAC == 0) then
   !!! calculating SCF
   ! Initial guess of snow covered fraction 
   fsnow_season       = 0
-  fsnow_nsnow        = 0
-  fsnow_nsnow_recent = 0
 
-  !! seasonal scf, inserting snow depth in formulas of Helbig et al. and Egli and Jonas
+  !!!!!!! seasonal scf, inserting snow depth in formulas of Helbig et al. and Egli and Jonas
   ! calculate standard deviation (done)
   sd_snowdepth2 = snowdepthmax(i,j)**0.549
   sd_snowdepth0 = sd_snowdepth1 * sd_snowdepth2 * sd_snowdepth3
@@ -190,19 +186,24 @@ if (SNFRAC == 0) then
   coeff_vari = sd_snowdepth0 / snowdepthmax(i,j)
 
   !! scf based on dswe of last 14 days
-  ! calculate standard deviation of dhs, taking Luca's formula (flat field approximation) 
+  ! calculate standard deviation of dhs, taking Luca's formula (flat field approximation)
+  fsnow_nsnow = 0
+  
   sd_snowdepth0_dhs = dsnowdepthmax**0.84
-  ! calculate snow covered fraction of nsnow 
+  ! calculate snow covered fraction of nsnow
   if (dsnowdepthmax > epsilon(dsnowdepthmax)) then
-    fsnow_nsnow = tanh(1.3 * dsnowdepth / sd_snowdepth0_dhs)
+    fsnow_nsnow = tanh(dsnowdepth**0.14 + dsnowdepth/0.13)
   end if
+  !!!!!!!
 
-  !! scf based on dswe_recent since last minimum
+  !!!!!!! scf based on dswe_recent since last minimum
   ! calculate standard deviation of dsnowdepth_recent, taking Luca's formula (flat field approximation)
+  fsnow_nsnow_recent = 0
+
   sd_snowdepth0_dhs_recent = dsnowdepth_recent**0.84
   ! calculate snow covered fraction of nsnow with recent dswe, converting SWEtmp into snow depth
   if (dsnowdepth_recent > epsilon(dsnowdepth_recent)) then
-    fsnow_nsnow_recent = tanh(1.3 * dsnowdepth_recent / sd_snowdepth0_dhs_recent)
+    fsnow_nsnow_recent = tanh(dsnowdepth_recent**0.14 + dsnowdepth_recent/0.13)
   end if
 
   ! take maximum between the two new snow scf, similar to taking the maximum of all three regimes at the end (done)
@@ -231,14 +232,6 @@ if (SNFRAC == 0) then
   !      fsnow_nsnow = 0
   !    end if
 
-  ! If snow amounts are too low, set snow covered fraction to zero 
-  if (snowdepthmin(i,j) < snowdepth_threshold) then
-    fsnow_season = 0
-  end if
-  if (dsnowdepth < snowdepth_threshold) then
-    fsnow_nsnow = 0
-  end if
-
   ! Use the largest of the two fsnow estimates
   fsnow(i,j) = max(fsnow_season,fsnow_nsnow)
 
@@ -247,7 +240,7 @@ if (SNFRAC == 0) then
     SWEhist(:,i,j) = SWEbuffer(1:14)
     snowdepthhist(:,i,j) = snowdepthbuffer(1:14)
   end if
-  
+  fsnow(i,j) = max(fsnow(i,j), 0.01) ! BC Nov. 23 this check is necessary because the SCF has infinite derivative close to the origin, which can lead the Ds to explode for infinitesimal SCF
 else if (SNFRAC == 1) then
   ! HelbigHS
   ! calculate standard deviation
@@ -257,11 +250,7 @@ else if (SNFRAC == 1) then
   ! calculate snow covered fraction 
   fsnow(i,j) = tanh(1.3 * snowdepth / sd_snowdepth0)
 
-  ! If snow amounts are too low, set snow covered fraction to zero
-  if (snowdepth < snowdepth_threshold) then
-    fsnow(i,j) = 0
-  end if
-
+  fsnow(i,j) = max(fsnow(i,j), 0.01) ! BC Nov. 23 this check is necessary because the SCF has infinite derivative close to the origin, which can lead the Ds to explode for infinitesimal SCF 
 else if (SNFRAC == 2) then
   ! HelbigHS0 !todo: think about switching this to HelbigSWEMAX to avoid settling dependent differenes between snowdepth and snowdepthmax 
   ! Set snowdepthmax equal to zero if no snow
@@ -281,11 +270,7 @@ else if (SNFRAC == 2) then
   ! calculate snow covered fraction 
   fsnow(i,j) = tanh(1.3 * snowdepth / sd_snowdepth0)
 
-  ! If snow amounts are too low, set snow covered fraction to zero
-  if (snowdepth < snowdepth_threshold) then
-    fsnow(i,j) = 0
-  end if
-
+  fsnow(i,j)= max(fsnow(i,j), 0.01) ! BC Nov. 23 this check is necessary because the SCF has infinite derivative close to the origin, which can lead the Ds to explode for infinitesimal SCF 
 else if (SNFRAC == 3) then
   ! Point model
   if (snowdepth > epsilon(snowdepth)) then

@@ -5,7 +5,8 @@ subroutine SNOW(Esrf,G,ksnow,ksoil,Melt,unload,Gsoil,Roff,meltflux_out,Sbsrf)
 
 use MODCONF, only: HYDROL,DENSTY,OSHDTN,HN_ON,SNFRAC
 
-use MODTILE, only: tthresh
+use MODPERT, only: WCPERT, FSPERT, SLPERT
+use MODTILE, only: tthresh 
  
 use CONSTANTS, only: &
   grav,              &! Acceleration due to gravity (m/s^2)
@@ -22,7 +23,11 @@ use DRIVING, only: &
   Rf,                &! Rainfall rate (kg/m^2/s)
   Sf,                &! Snowfall rate (kg/m^2/s)
   Ta,                &! Air temperature (K)
-  Ua                  ! Wind speed (m/s)
+  Ua,                &! Wind speed (m/s)
+  wcP,               &! Liquid water content perturbation (kg/kg_snow)
+  fsP,               &
+  slP
+
 
 use GRID, only: &
   Dzsnow,            &! Minimum snow layer thicknesses (m)
@@ -263,6 +268,8 @@ do i = 1, Nx
           Roff_snow(i,j) = Sliq(k,i,j) - SliqMax   ! so drainage to next layer
           Sliq(k,i,j) = SliqMax
         end if
+        ! csnow needs to be updated after changing Sliq and Sice
+        csnow(k) = (Sice(k,i,j)*hcap_ice + Sliq(k,i,j)*hcap_wat) / fsnow(i,j)
         coldcont = csnow(k)*(Tm - Tsnow(k,i,j))
         if (coldcont > 0) then       ! Liquid can freeze
           dSice = min(Sliq(k,i,j), fsnow(i,j)*coldcont/Lf) 
@@ -278,12 +285,16 @@ do i = 1, Nx
       end if
       
     else  ! HYDROL == 2
+      ! taken from JIM (originately from Anderson, 1976)
       ! Density-dependent bucket storage
       do k = 1, Nsnow(i,j)
         if (Ds(k,i,j) > epsilon(Ds)) then
           rhos = Sice(k,i,j) / Ds(k,i,j) / fsnow(i,j)
           SliqCap = 0.03 + 0.07*(1 - rhos/200)
           SliqCap = max(SliqCap, 0.03)
+          if (WCPERT .eqv. .TRUE.) then
+            SliqCap = max(SliqCap + wcP(i,j), 0.00001)
+          endif
         end if
         SliqMax = SliqCap*Sice(k,i,j)
         Sliq(k,i,j) = Sliq(k,i,j) + Roff_snow(i,j)
@@ -292,6 +303,8 @@ do i = 1, Nx
           Roff_snow(i,j) = Sliq(k,i,j) - SliqMax   ! so drainage to next layer
           Sliq(k,i,j) = SliqMax
         end if
+        ! csnow needs to be updated after changing Sliq and Sice
+        csnow(k) = (Sice(k,i,j)*hcap_ice + Sliq(k,i,j)*hcap_wat) / fsnow(i,j)
         coldcont = csnow(k)*(Tm - Tsnow(k,i,j))
         if (coldcont > epsilon(coldcont)) then       ! Liquid can freeze
           dSice = min(Sliq(k,i,j), fsnow(i,j)*coldcont/Lf) 
@@ -351,6 +364,9 @@ do i = 1, Nx
           f1 = 1 / (1 + 600 * Sliq(k,i,j) / (rho_wat * Ds(k,i,j) * fsnow(i,j)))
           f2 = 1.0
           eta = f1 * f2 * eta1 * (rhos / c_eta) * exp(a_eta * (Tm - Tsnow(k,i,j)) + b_eta * rhos)
+          if (SLPERT) then
+            eta = eta * slP(i,j)
+          endif
           rhos = rhos + rhos*grav*mass*dt/eta
           Ds(k,i,j) = (Sice(k,i,j) + Sliq(k,i,j)) / rhos / fsnow(i,j)
         end if
@@ -429,14 +445,17 @@ do i = 1, Nx
       rhonew = rhof + rhob*(Ta(i,j) - Tm) + rhoc*Ua(i,j)**0.5
       if (dem(i,j) <= 1000) then
         t_decompaction = 24
-      else if (dem(i,j) > 2000) then
+      else if (dem(i,j) > 4000) then
         t_decompaction = 0
       else
-        t_decompaction = 24 + (dem(i,j) - 1000) / (2000 - 1000) * (0 - 24)
+        t_decompaction = 24 + (dem(i,j) - 1000) / (4000 - 1000) * (0 - 24)
       end if
       rhonew = 300 + (rhonew - 300)*exp(t_decompaction/100)
       rhonew = max(rhonew, 50.)
     end if
+    if (FSPERT) then
+      rhonew = rhonew + fsP(i,j)
+    endif
   endif
   if (Sice(1,i,j) + dSice > epsilon(Sice)) then
     rgrn(1,i,j) = (Sice(1,i,j)*rgrn(1,i,j) + dSice*rgr0) / (Sice(1,i,j) + dSice)

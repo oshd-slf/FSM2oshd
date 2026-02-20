@@ -3,7 +3,7 @@
 !-----------------------------------------------------------------------
 subroutine RADIATION(alb,SWsrf,SWveg,Sdirt,Sdift,asrf_out,SWsci,LWt)
 
-use MODCONF, only: CANMOD, RADSBG, ALBEDO, OSHDTN
+use MODCONF, only: CANMOD, RADSBG, ALBEDO, OSHDTN,ALRADT
 
 use MODPERT, only: ALPERT
 use MODTILE, only: tthresh 
@@ -26,7 +26,8 @@ use DRIVING, only: &
   Sf24h,             &! Snowfall 24hr (kg/m2)
   Ta,                &! Air temperature (K)
   Tv,                &! Time-varying transmissivity for dSWR
-  alP                 ! albedo perturbation for fresh snow
+  alP,               &! albedo perturbation for fresh snow
+  Sdird               ! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
 
 use GRID, only: &
   Nx,Ny               ! Grid dimensions
@@ -39,8 +40,8 @@ use PARAMETERS, only: &
   Talb,              &! Albedo decay temperature threshold (C)
   tcld,              &! Cold snow albedo decay timescale (s)
   tmlt,              &! Melting snow albedo decay timescale (s)
-  adfs,              & ! forest albedo decay factor
-  adfl,              & ! forest albedo decay factor
+  adfs,              &! forest albedo decay factor
+  adfl,              &! forest albedo decay factor
   fsar,              &! Albedo adjustment range for canopy dependence 
   Sfmin               ! Minimum 24h snowfall to refresh albedo (kg/m^2)
   
@@ -115,11 +116,11 @@ do i = 1, Nx
     else ! OSHDTN == 1
       ! 11/2021 tuning: high elevation afs changed from 0.86 to 0.92
       if (dem(i,j) >= 2300) then
-        afs  = 0.92
+        afs  = 0.86
       else if (dem(i,j) <= 1500) then
         afs = 0.80
       else
-        afs = 0.92 + (2300 - dem(i,j)) / (2300 - 1500) * (0.80 - 0.92)
+        afs = 0.86 + (2300 - dem(i,j)) / (2300 - 1500) * (0.80 - 0.86)
       end if
     end if
   end if
@@ -162,12 +163,35 @@ do i = 1, Nx
       adc = 1000
     else
       ! BC: NB, keep formerly tuned decay rates if albedo perturbations switched on
-      if (month > 6 .AND. month < 10) then
-        adm = 50
+      adm = 130
+      if (dem(i,j) >= 2300) then
+        adc  = 6000
+      else if (dem(i,j) <= 1500) then
+        adc = 3000
       else
-        adm = 130
+        adc = 6000 + (2300 - dem(i,j)) / (2300 - 1500) * (3000 - 6000)
       end if
-      adc = 3000
+    endif
+
+    ! BC 08.23: aspect-dependent albedo tuning. Activated for oper season 2024
+    ! or optionally.
+    if ((ALRADT==1) .OR. (OSHDTN==1)) then
+      ! BC Oct 23: Jan's suggestion: modify only when the decay rate should be increased (ad* DECREASE), not decreased
+      if ((Sdir(i,j) > epsilon(Sdir(i,j))) .AND. (Sdird(i,j) < Sdir(i,j))) then
+        adm = adm * (Sdird(i,j))/(Sdir(i,j))
+        adc = adc * (Sdird(i,j))/(Sdir(i,j))
+        if (adm<epsilon(adm)) then
+          adm = epsilon(adm)
+        endif
+        if (adc<epsilon(adc)) then
+          adc = epsilon(adc)
+        endif
+      endif
+    endif
+
+    if (ALPERT) then
+      adm = adm * alP(i,j)
+      adc = adc * alP(i,j)
     endif
     if (Tsrf(i,j) >= Tm .AND. Tsnow(1,i,j) >= Tm) then  ! was only based on Tss
       albs(i,j) = (albs(i,j) - asmn)*exp(-(dt/3600)/adm) + asmn
@@ -249,14 +273,14 @@ do i = 1, Nx
     SWsci(i,j) = tdif*Sdif_aux + tdir*Sdirt(i,j)
   endif 
   
-    ! Thermal emissions from surroundings 
-    ! Terrain LWR if not calculated later; 
-    LWt(i,j) = fsky_terr(i,j)*LW(i,j) + (1 - fsky_terr(i,j))*sb*Ta(i,j)**4   
+  ! Thermal emissions from surroundings
+  ! Terrain LWR if not calculated later
+  LWt(i,j) = fsky_terr(i,j)*LW(i,j) + (1 - fsky_terr(i,j))*sb*Ta(i,j)**4
 
-    ! LW overwritten by LWt only if EBALFOR is used, where terrain impacts are accounted for already 
-    if (CANMOD == 0 .OR. fveg(i,j) == 0) then
-      LW(i,j) = LWt(i,j)
-    endif
+  ! LW overwritten by LWt only if EBALFOR is used, where terrain impacts are accounted for already
+  if (CANMOD == 0 .OR. fveg(i,j) == 0) then
+    LW(i,j) = LWt(i,j)
+  endif
             
   2 continue 
   

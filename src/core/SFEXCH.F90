@@ -129,11 +129,9 @@ do i = 1, Nx
         z0loc = z0sn
       else ! OSHDTN == 1
         if (dem(i,j) >= 2300) then
-          z0loc = 0.003
+          z0loc = 0.01
         else if (dem(i,j) >= 1500) then
-          z0loc = 0.03 + (dem(i,j) - 1500) / (2300 - 1500) * (0.003 - 0.03)
-        else if (dem(i,j) >= 1200) then  ! simple linear b/w two above values
-          z0loc = 0.2 + (dem(i,j) - 1200) / (1500 - 1200) * (0.03 - 0.2)
+          z0loc = 0.2 + (dem(i,j) - 1500) / (2300 - 1500) * (0.01 - 0.2)
         else
           z0loc = 0.2
         end if
