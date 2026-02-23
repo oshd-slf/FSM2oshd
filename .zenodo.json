@@ -1,0 +1,48 @@
+{
+  "creators": [
+    {
+      "name": "Mott, Rebecca",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Winstral, Adam",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Cluzet, Bertrand",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Helbig, Nora",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Magnusson, Jan",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Mazzotti, Giulia",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Queno, Louis",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Schirmer, Michael",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Webster, Clare",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    },
+    {
+      "name": "Jonas, Tobias",
+      "affiliation": "WSL - Snow and avalanche research institute - SLF"
+    }
+  ],
+  "title": "Your Software Title",
+  "description": "A short description.",
+  "license": "MIT",
+  "keywords": ["keyword1", "keyword2"]
+}
