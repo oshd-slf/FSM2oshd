@@ -41,8 +41,5 @@
       "affiliation": "WSL - Snow and avalanche research institute - SLF"
     }
   ],
-  "title": "Your Software Title",
-  "description": "A short description.",
-  "license": "MIT",
-  "keywords": ["keyword1", "keyword2"]
+  "title": "FSM2oshd"
 }
