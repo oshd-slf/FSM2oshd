@@ -291,6 +291,7 @@ rho0 = 300
 rhob = 6
 rhoc = 26
 rhof = 109
+rhos_max = 750
 rcld = 300
 rgr0 = 5e-5
 rmlt = 500
