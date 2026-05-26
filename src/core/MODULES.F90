@@ -262,6 +262,7 @@ real :: &
   rhob,              &! Temperature factor in fresh snow density (kg/m^3/K)
   rhoc,              &! Wind factor in fresh snow density (kg s^0.5/m^3.5)
   rhof,              &! Fresh snow density (kg/m^3)
+  rhos_max,          &! Maximum snow density (kg/m^3)
   rcld,              &! Maximum density for cold snow (kg/m^3)
   rmlt,              &! Maximum density for melting snow (kg/m^3)
   snda,              &! Thermal metamorphism parameter (1/s)

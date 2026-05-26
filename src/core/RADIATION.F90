@@ -108,22 +108,24 @@ do i = 1, Nx
   if (tilefrac(i,j) < tthresh) goto 1 ! exclude points outside tile of interest
   
   ! New Snow albedo 
+  afs = asmx ! use fixes fresh snow density
   if (ALPERT .eqv. .TRUE.) then
     afs = alP(i,j)
-  else
-    if (OSHDTN == 0) then 
-      afs = asmx
-    else ! OSHDTN == 1
-      ! 11/2021 tuning: high elevation afs changed from 0.86 to 0.92
-      if (dem(i,j) >= 2300) then
-        afs  = 0.86
-      else if (dem(i,j) <= 1500) then
-        afs = 0.80
-      else
-        afs = 0.86 + (2300 - dem(i,j)) / (2300 - 1500) * (0.80 - 0.86)
-      end if
-    end if
   end if
+  ! else
+  !   if (OSHDTN == 0) then
+  !     afs = asmx
+  !   else ! OSHDTN == 1
+  !     ! 11/2021 tuning: high elevation afs changed from 0.86 to 0.92
+  !     if (dem(i,j) >= 2300) then
+  !       afs  = 0.86
+  !     else if (dem(i,j) <= 1500) then
+  !       afs = 0.80
+  !     else
+  !       afs = 0.86 + (2300 - dem(i,j)) / (2300 - 1500) * (0.80 - 0.86)
+  !     end if
+  !   end if
+  ! end if
   if (ALBEDO == 0) then
   ! Diagnostic
     albs(i,j) = asmn + (afs - asmn)*(Tsrf(i,j) - Tm) / Talb

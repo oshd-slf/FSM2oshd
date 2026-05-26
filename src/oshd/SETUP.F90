@@ -260,8 +260,8 @@ tcnm = 48
 
 ! Defaults for snow parameters
 a_eta = 0.1
-asmx = 0.8       ! unused if OSHDTN = 1
-asmn = 0.5
+asmx = 0.86       ! unused if OSHDTN = 1
+asmn = 0.6
 b_eta = 0.023
 bstb = 5
 bthr = 2
