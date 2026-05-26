@@ -263,7 +263,7 @@ Nitr = 4
 avg0 = 0.1
 avgs = 0.4
 cden = 0.004
-cvai = 6.6
+cvai = 4.4
 cveg = 20
 Gcn1 = 0.5
 Gcn2 = 0
@@ -308,7 +308,7 @@ Sfmin = 10
 if (TILE == 'forest') then
   ! asmx = 0.88
   hfsn = 0.3    
-  z0sn = 0.005   
+  z0sn = 0.01   
 endif 
 
 ! Defaults for ground surface parameters
@@ -323,8 +323,8 @@ psf  = 1
 psr  = 0.1
 wcan = 2.5
 zsub = 2
-zgf = 5
-zgr = 5
+zgf = 1
+zgr = 0
 khcf = 3
 
 if (DENSTY == 0) then
@@ -372,7 +372,6 @@ trcn(:,:)  = undef
 VAI(:,:)   = undef
 vfhp(:,:)  = undef
 
-print*, lai
 !Terrain properties
 allocate(slopemu(Nx,Ny))
 allocate(xi(Nx,Ny))
@@ -544,7 +543,6 @@ end if
 ! read(1129) dem
 
 read(5000, nam_location)
-print*, fveg
 
 ! Cap glacier temperatures to 0°C
 if (TILE == 'glacier') then

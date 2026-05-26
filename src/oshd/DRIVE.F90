@@ -25,6 +25,7 @@ use DRIVING, only: &
   Rf,                &! Rainfall rate (kg/m2/s)
   Sdif,              &! Diffuse shortwave radiation (W/m^2)
   Sdir,              &! Direct-beam shortwave radiation (W/m^2)
+  Sdird,             &! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
   Sf,                &! Snowfall rate (kg/m2/s)
   Sf24h,             &! Snowfall 24hr (kg/m2)
   Ta,                &! Air temperature (K)
@@ -108,6 +109,11 @@ endif
 if (SLPERT) then
   inquire(unit=819, pos=where)
   read(819,pos=where,IOSTAT=eastatus) ((slP(i,j),j=1,Ny),i=1,Nx)
+endif
+
+if ((ALRADT == 1) .OR. (OSHDTN == 1)) then
+  inquire(unit=820, pos=where)
+  read(820,pos=where,IOSTAT=eastatus) ((Sdird(i,j),i=1,Nx),j=1,Ny)
 endif
 
 Ua = max(Ua, 0.1)

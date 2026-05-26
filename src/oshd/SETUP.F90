@@ -26,6 +26,7 @@ use DRIVING, only: &
   Sf,                &! Snowfall rate (kg/m2/s)
   Sf24h,             &! Snowfall 24hr (kg/m2)
   Sdir,              &! Incoming direct beam radiation on flat,unobstructed surface (W/m2)
+  Sdird,             &! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
   Sdif,              &! Incoming diffuse radiation on flat,unobstructed (W/m2)
   Ta,                &! Air temperature (K)
   Tv,                &! Time-varying canopy transmissivity for dSWR (-)
@@ -221,6 +222,7 @@ allocate(Qa(Nx,Ny))
 allocate(Rf(Nx,Ny))
 allocate(Sf(Nx,Ny))
 allocate(Sdir(Nx,Ny))
+allocate(Sdird(Nx,Ny))
 allocate(Sdif(Nx,Ny))
 allocate(Ta(Nx,Ny))
 allocate(Ua(Nx,Ny))
@@ -260,8 +262,8 @@ tcnm = 48
 
 ! Defaults for snow parameters
 a_eta = 0.1
-asmx = 0.86       ! unused if OSHDTN = 1
-asmn = 0.6
+asmx = 0.8       ! unused if OSHDTN = 1
+asmn = 0.5
 b_eta = 0.023
 bstb = 5
 bthr = 2
@@ -274,6 +276,7 @@ rho0 = 300
 rhob = 6
 rhoc = 26
 rhof = 109
+rhos_max = 750
 rcld = 300
 rgr0 = 5e-5
 rmlt = 500
@@ -347,10 +350,12 @@ fsky(:,:)  = undef
 fveg(:,:)  = undef
 fves(:,:)  = undef
 hcan(:,:)  = undef
+lai(:,:)   = undef
 pmultf(:,:) = undef
 scap(:,:)  = undef
 trcn(:,:)  = undef
 VAI(:,:)   = undef
+vfhp(:,:)  = undef
 
 !Terrain properties
 allocate(slopemu(Nx,Ny))

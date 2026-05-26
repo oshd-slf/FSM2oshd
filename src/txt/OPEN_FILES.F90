@@ -3,7 +3,7 @@
 !-----------------------------------------------------------------------
 subroutine OPEN_FILES
   
-use MODCONF, only: CANMOD, SNFRAC, FOR_HN
+use MODCONF, only: CANMOD, SNFRAC, FOR_HN, ALRADT, OSHDTN
 
 use MODPERT, only: Z0PERT, WCPERT, FSPERT,ALPERT,SLPERT
 
@@ -24,6 +24,7 @@ character(len=80) :: met_file_day
 character(len=80) :: met_file_hour
 character(len=80) :: met_file_SWb
 character(len=80) :: met_file_SWd
+character(len=80) :: met_file_SWdd
 character(len=80) :: met_file_LW
 character(len=80) :: met_file_Sf
 character(len=80) :: met_file_Rf
@@ -150,6 +151,7 @@ if (WCPERT) pert_file_wc   = 'drive_wcpx.bin'
 if (FSPERT) pert_file_fs   = 'drive_fspx.bin'
 if (ALPERT) pert_file_al   = 'drive_alpx.bin'
 if (SLPERT) pert_file_sl   = 'drive_slpx.bin'
+if ((ALRADT==1) .OR. (OSHDTN == 1)) met_file_SWdd   = 'drive_sddx.bin'
 
 open(800, file = met_file_year,  form='unformatted', access='stream', status='old')
 open(801, file = met_file_month, form='unformatted', access='stream', status='old')
@@ -174,6 +176,9 @@ if (WCPERT) open(816, file = pert_file_wc, form='unformatted', access='stream', 
 if (FSPERT) open(817, file = pert_file_fs, form='unformatted', access='stream', status='old')
 if (ALPERT) open(818, file = pert_file_al, form='unformatted', access='stream', status='old')
 if (SLPERT) open(819, file = pert_file_sl, form='unformatted', access='stream', status='old')
+if ((ALRADT==1) .OR. (OSHDTN == 1)) then
+  open(820, file = met_file_SWdd,   form='unformatted', access='stream', status='old')
+endif
 
 ! Initial state variables
 
