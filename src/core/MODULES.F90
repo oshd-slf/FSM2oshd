@@ -189,6 +189,7 @@ real, allocatable :: &
   Sf24h(:,:),        &! Snowfall 24hr (kg/m^2)
   Sdif(:,:),         &! Diffuse shortwave radiation (W/m^2)
   Sdir(:,:),         &! Direct-beam shortwave radiation (W/m^2)
+  Sdird(:,:),        &! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
   Ta(:,:),           &! Air temperature (K)
   Tv(:,:),           &! Time-varying transmissivity for direct SWR (-)
   Ua(:,:),           &! Wind speed (m/s)
@@ -196,8 +197,7 @@ real, allocatable :: &
   wcP(:,:),          &! liquid water capacity perturbations
   fsP(:,:),          &! fresh snow density perturbations
   alP(:,:),          &! albedo perturbations
-  slP(:,:),          &! settling perturbations
-  Sdird(:,:)         ! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
+  slP(:,:)           ! settling perturbations
 end module DRIVING
 
 !-----------------------------------------------------------------------
