@@ -107,11 +107,13 @@ do i = 1, Nx
 
   if (tilefrac(i,j) < tthresh) goto 1 ! exclude points outside tile of interest
   
-  ! New Snow albedo 
-  afs = asmx ! use fixes fresh snow density
+  ! New Snow albedo: use fixed fresh snow albedo
+  ! unless albedo perturbations are on, in which case use local value
+  afs = asmx
   if (ALPERT .eqv. .TRUE.) then
     afs = alP(i,j)
   end if
+  ! This is the previous fresh-snow-albedo tuning based on elevation
   ! else
   !   if (OSHDTN == 0) then
   !     afs = asmx

@@ -3,7 +3,7 @@
 !-----------------------------------------------------------------------
 subroutine DRIVE(EoR)
 
-use MODCONF, only: CANMOD
+use MODCONF, only: CANMOD, OSHDTN, ALRADT
 
 use MODPERT, only: Z0PERT,WCPERT,FSPERT,ALPERT,SLPERT
 
@@ -113,7 +113,7 @@ endif
 
 if ((ALRADT == 1) .OR. (OSHDTN == 1)) then
   inquire(unit=820, pos=where)
-  read(820,pos=where,IOSTAT=eastatus) ((Sdird(i,j),i=1,Nx),j=1,Ny)
+  read(820,pos=where,IOSTAT=eastatus) ((Sdird(i,j),j=1,Ny),i=1,Nx)
 endif
 
 Ua = max(Ua, 0.1)

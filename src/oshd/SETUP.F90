@@ -152,6 +152,7 @@ NSNFRAC = -1
 NRADSBG = -1
 NZOFFST = -1
 NOSHDTN = -1
+NALRADT = -1
 LHN_ON = .FALSE.
 LFOR_HN = .FALSE.
 read(5000, nam_modconf)

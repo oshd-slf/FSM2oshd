@@ -37,6 +37,7 @@ def write_namelist(ALBEDO, CANMOD, CONDCT, DENSTY, EXCHNG, HYDROL):
   NRADSBG = 0,
   NZOFFST = 0,
   NOSHDTN = 1,
+  NALRADT = 0,
   LHN_ON  = .FALSE.,
   LFOR_HN = .TRUE.,
 /
