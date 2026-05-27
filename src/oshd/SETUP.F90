@@ -4,7 +4,7 @@
 subroutine SETUP
 
 use MODCONF, only: ALBEDO,CANMOD,CONDCT,DENSTY,EXCHNG,HYDROL,&
-SNFRAC,RADSBG,ZOFFST,OSHDTN,HN_ON,FOR_HN
+SNFRAC,RADSBG,ZOFFST,OSHDTN,ALRADT,HN_ON,FOR_HN
 
 use MODPERT, only: Z0PERT,WCPERT,FSPERT,ALPERT,SLPERT
 
@@ -62,7 +62,7 @@ integer :: &
   NNsmax,NNsoil,NNx,NNy
   
 integer :: &
-  NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN
+  NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN,NALRADT
   
 real :: &
   zzT,zzU
@@ -98,7 +98,7 @@ logical :: lexist
 namelist  /nam_grid/    NNx,NNy,NNsmax,NNsoil
 namelist  /nam_layers/  DDzsnow,DDzsoil
 namelist  /nam_driving/ zzT,zzU
-namelist  /nam_modconf/ NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN,LHN_ON,LFOR_HN
+namelist  /nam_modconf/ NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN,NALRADT,LHN_ON,LFOR_HN
 namelist  /nam_modtile/ CTILE, rtthresh
 namelist  /nam_modpert/ LZ0PERT,LWCPERT,LFSPERT,LALPERT,LSLPERT
 namelist  /nam_results/ CLIST_DIAG_RESULTS, CLIST_STATE_RESULTS
@@ -165,11 +165,12 @@ SNFRAC = NSNFRAC
 RADSBG = NRADSBG
 ZOFFST = NZOFFST
 OSHDTN = NOSHDTN
+ALRADT = NALRADT
 HN_ON = LHN_ON
 FOR_HN = LFOR_HN
 
 if (ALBEDO==-1 .or. CANMOD==-1 .or. CONDCT==-1 .or. DENSTY==-1 .or. EXCHNG==-1 &
-.or. HYDROL==-1 .or. SNFRAC==-1 .or. RADSBG ==-1 .or. ZOFFST ==-1 .or. OSHDTN ==-1) then
+.or. HYDROL==-1 .or. SNFRAC==-1 .or. RADSBG ==-1 .or. ZOFFST ==-1 .or. OSHDTN ==-1 .or. ALRADT ==-1) then
   print*, 'model configuration error:\n please specify all the fields of MODCONF in the namelist (&nam_modconf)'
   call exit(1)
 endif
@@ -222,7 +223,6 @@ allocate(Qa(Nx,Ny))
 allocate(Rf(Nx,Ny))
 allocate(Sf(Nx,Ny))
 allocate(Sdir(Nx,Ny))
-allocate(Sdird(Nx,Ny))
 allocate(Sdif(Nx,Ny))
 allocate(Ta(Nx,Ny))
 allocate(Ua(Nx,Ny))
@@ -235,6 +235,7 @@ if (WCPERT) allocate(wcP(Nx,Ny))
 if (FSPERT) allocate(fsP(Nx,Ny))
 if (ALPERT) allocate(alP(Nx,Ny))
 if (SLPERT) allocate(slP(Nx,Ny))
+if ((ALRADT == 1) .OR. (OSHDTN == 1)) allocate(Sdird(Nx,Ny))
 
 ! use Tv dummy in case of open simulations
 if (CANMOD == 0) then

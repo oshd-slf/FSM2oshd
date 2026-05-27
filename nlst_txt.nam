@@ -21,10 +21,11 @@
   NDENSTY = 3,
   NEXCHNG = 1,
   NHYDROL = 2,
-  NSNFRAC = 3,
+  NSNFRAC = 3, ! 0 for gridded runs, 3 for point runs
   NRADSBG = 0,
   NZOFFST = 0,
   NOSHDTN = 1,
+  NALRADT = 0,
   LHN_ON  = .FALSE.,
   LFOR_HN = .TRUE.,
 /
@@ -32,7 +33,7 @@
   LZ0PERT = .FALSE.,
 /
 &nam_modtile
-  CTILE = 'open',
+  CTILE = 'open', ! use 'open' or 'glacier'
   rtthresh = 0.1,
 /
 &nam_results
