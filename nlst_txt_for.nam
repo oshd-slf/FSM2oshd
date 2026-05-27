@@ -25,6 +25,7 @@
   NRADSBG = 0,
   NZOFFST = 1,
   NOSHDTN = 1,
+  NALRADT = 0,
   LHN_ON  = .FALSE.,
   LFOR_HN = .TRUE.,
 /

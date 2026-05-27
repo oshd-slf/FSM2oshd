@@ -4,7 +4,7 @@
 subroutine SETUP
 
 use MODCONF, only: ALBEDO,CANMOD,CONDCT,DENSTY,EXCHNG,HYDROL,&
-SNFRAC,RADSBG,ZOFFST,OSHDTN,HN_ON,FOR_HN
+SNFRAC,RADSBG,ZOFFST,OSHDTN,ALRADT,HN_ON,FOR_HN
 
 use MODPERT, only: Z0PERT,WCPERT,FSPERT,ALPERT,SLPERT
 
@@ -26,6 +26,7 @@ use DRIVING, only: &
   Sf,                &! Snowfall rate (kg/m2/s)
   Sf24h,             &! Snowfall 24hr (kg/m2)
   Sdir,              &! Incoming direct beam radiation on flat,unobstructed surface (W/m2)
+  Sdird,             &! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
   Sdif,              &! Incoming diffuse radiation on flat,unobstructed (W/m2)
   Ta,                &! Air temperature (K)
   Tv,                &! Time-varying canopy transmissivity for dSWR (-)
@@ -61,7 +62,7 @@ integer :: &
   NNsmax,NNsoil,NNx,NNy
   
 integer :: &
-  NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN
+  NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN,NALRADT
   
 real :: &
   zzT,zzU
@@ -97,7 +98,7 @@ logical :: lexist
 namelist  /nam_grid/    NNx,NNy,NNsmax,NNsoil
 namelist  /nam_layers/  DDzsnow,DDzsoil
 namelist  /nam_driving/ zzT,zzU
-namelist  /nam_modconf/ NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN,LHN_ON,LFOR_HN
+namelist  /nam_modconf/ NALBEDO,NCANMOD,NCONDCT,NDENSTY,NEXCHNG,NHYDROL,NSNFRAC,NRADSBG,NZOFFST,NOSHDTN,NALRADT,LHN_ON,LFOR_HN
 namelist  /nam_modtile/ CTILE, rtthresh
 namelist  /nam_modpert/ LZ0PERT,LWCPERT,LFSPERT,LALPERT,LSLPERT
 namelist  /nam_results/ CLIST_DIAG_RESULTS, CLIST_STATE_RESULTS
@@ -151,6 +152,7 @@ NSNFRAC = -1
 NRADSBG = -1
 NZOFFST = -1
 NOSHDTN = -1
+NALRADT = -1
 LHN_ON = .FALSE.
 LFOR_HN = .FALSE.
 read(5000, nam_modconf)
@@ -164,11 +166,12 @@ SNFRAC = NSNFRAC
 RADSBG = NRADSBG
 ZOFFST = NZOFFST
 OSHDTN = NOSHDTN
+ALRADT = NALRADT
 HN_ON = LHN_ON
 FOR_HN = LFOR_HN
 
 if (ALBEDO==-1 .or. CANMOD==-1 .or. CONDCT==-1 .or. DENSTY==-1 .or. EXCHNG==-1 &
-.or. HYDROL==-1 .or. SNFRAC==-1 .or. RADSBG ==-1 .or. ZOFFST ==-1 .or. OSHDTN ==-1) then
+.or. HYDROL==-1 .or. SNFRAC==-1 .or. RADSBG ==-1 .or. ZOFFST ==-1 .or. OSHDTN ==-1 .or. ALRADT ==-1) then
   print*, 'model configuration error:\n please specify all the fields of MODCONF in the namelist (&nam_modconf)'
   call exit(1)
 endif
@@ -233,6 +236,7 @@ if (WCPERT) allocate(wcP(Nx,Ny))
 if (FSPERT) allocate(fsP(Nx,Ny))
 if (ALPERT) allocate(alP(Nx,Ny))
 if (SLPERT) allocate(slP(Nx,Ny))
+if ((ALRADT == 1) .OR. (OSHDTN == 1)) allocate(Sdird(Nx,Ny))
 
 ! use Tv dummy in case of open simulations
 if (CANMOD == 0) then
@@ -274,6 +278,7 @@ rho0 = 300
 rhob = 6
 rhoc = 26
 rhof = 109
+rhos_max = 750
 rcld = 300
 rgr0 = 5e-5
 rmlt = 500
@@ -347,10 +352,12 @@ fsky(:,:)  = undef
 fveg(:,:)  = undef
 fves(:,:)  = undef
 hcan(:,:)  = undef
+lai(:,:)   = undef
 pmultf(:,:) = undef
 scap(:,:)  = undef
 trcn(:,:)  = undef
 VAI(:,:)   = undef
+vfhp(:,:)  = undef
 
 !Terrain properties
 allocate(slopemu(Nx,Ny))

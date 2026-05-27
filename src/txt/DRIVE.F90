@@ -25,6 +25,7 @@ use DRIVING, only: &
   Rf,                &! Rainfall rate (kg/m2/s)
   Sdif,              &! Diffuse shortwave radiation (W/m^2)
   Sdir,              &! Direct-beam shortwave radiation (W/m^2)
+  Sdird,             &! Direct-beam shortwave radiation, per horizontal surface area (W/m2)
   Sf,                &! Snowfall rate (kg/m2/s)
   Sf24h,             &! Snowfall 24hr (kg/m2)
   Ta,                &! Air temperature (K)
@@ -54,7 +55,11 @@ real*4 :: &
 
 integer :: i,j,where,eastatus 
 
-read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv
+if (allocated(Sdird)) then
+  read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv, Sdird
+else
+  read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv
+endif
 
 ! use Tv dummy in case of open simulations
 if (CANMOD == 0) then

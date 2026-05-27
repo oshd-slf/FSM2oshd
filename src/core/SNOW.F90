@@ -47,6 +47,7 @@ use PARAMETERS, only: &
   rhob,              &! Temperature factor in fresh snow density (kg/m^3/K)
   rhoc,              &! Wind factor in fresh snow density (kg s^0.5/m^3.5)
   rhof,              &! Fresh snow density (kg/m^3)
+  rhos_max,          &! Maximum snow density (kg/m^3)
   rcld,              &! Maximum density for cold snow (kg/m^3)
   rmlt,              &! Maximum density for melting snow (kg/m^3)
   snda,              &! Thermal metamorphism parameter (1/s)
@@ -154,7 +155,7 @@ do i = 1, Nx
     if (SNFRAC == 3) then
       fsnow_thres(i,j) = fsnow(i,j)
     else
-      fsnow_thres(i,j) = max(fsnow(i,j),0.1)
+      fsnow_thres(i,j) = min(fsnow(i,j)+ 0.25,1.)
     end if
 
     ! Heat conduction
@@ -350,6 +351,7 @@ do i = 1, Nx
           rhos = (Sice(k,i,j) + Sliq(k,i,j)) / Ds(k,i,j) / fsnow(i,j)
           rhos = rhos + (rhos*grav*mass*dt/(eta0*exp(-(Tsnow(k,i,j) - Tm)/12.4 + rhos/55.6))   &
                       + dt*rhos*snda*exp((Tsnow(k,i,j) - Tm)/23.8 - max(rhos - 150, 0.)/21.7))
+          rhos = min(rhos, rhos_max)
           Ds(k,i,j) = (Sice(k,i,j) + Sliq(k,i,j)) / rhos / fsnow(i,j)
         end if
         mass = mass + 0.5*(Sice(k,i,j) + Sliq(k,i,j)) / fsnow(i,j)
@@ -368,6 +370,7 @@ do i = 1, Nx
             eta = eta * slP(i,j)
           endif
           rhos = rhos + rhos*grav*mass*dt/eta
+          rhos = min(rhos, rhos_max)
           Ds(k,i,j) = (Sice(k,i,j) + Sliq(k,i,j)) / rhos / fsnow(i,j)
         end if
         mass = mass + 0.5*(Sice(k,i,j) + Sliq(k,i,j)) / fsnow(i,j)
