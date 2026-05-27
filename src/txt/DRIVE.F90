@@ -55,7 +55,11 @@ real*4 :: &
 
 integer :: i,j,where,eastatus 
 
-read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv, Sdird
+if (allocated(Sdird)) then
+  read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv, Sdird
+else
+  read(umet,*,end=1) year, month, day, hour, Sdir, Sdif, LW, Sf, Rf, Ta, RH, Ua, Ps, Sf24h, Tv
+endif
 
 ! use Tv dummy in case of open simulations
 if (CANMOD == 0) then
